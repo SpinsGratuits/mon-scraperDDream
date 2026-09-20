@@ -5,7 +5,7 @@ import requests
 from bs4 import BeautifulSoup
 
 # 1. Lancer la requête sur le site cible
-url = "https://example.com"  # Remplacez par le site de votre choix
+url = "https://gamewave.fr/dice-dreams/dice-dreams-liens-des-lancers-de-des-gratuits/"  # Remplacez par le site de votre choix
 headers = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
 }
