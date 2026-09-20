@@ -5,7 +5,7 @@ import requests
 from bs4 import BeautifulSoup
 
 # 1. URL du site cible
-url = "https://gamewave.fr"
+url = "https://gamewave.fr/dice-dreams/dice-dreams-liens-des-lancers-de-des-gratuits/"
 headers = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
 }
@@ -32,7 +32,7 @@ if response.status_code == 200:
     
     if scraped_links:
         # Note : Le mode "w" réinitialise (écrase) complètement le fichier s'il existe déjà
-        with open("data.csv", mode="w", newline="", encoding="utf-8") as file:
+        with open("ScraperDiceDream.csv", mode="w", newline="", encoding="utf-8") as file:
             writer = csv.writer(file)
             writer.writerow(["Date Scraping", "Lien Cadeau Dice Dreams"]) # L'en-tête est réécrit à chaque fois
             
