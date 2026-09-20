@@ -1,4 +1,5 @@
 import csv
+import os
 from datetime import datetime
 import requests
 from bs4 import BeautifulSoup
@@ -47,7 +48,7 @@ if response.status_code == 200:
 
         # 3. Écrire et écraser le fichier CSV avec la table complète
         if table_data:
-            with open("data.csv", mode="w", newline="", encoding="utf-8") as file:
+            with open("data.csv", mode="a", newline="", encoding="utf-8") as file:
                 writer = csv.writer(file)
                 # En-têtes du fichier CSV de sauvegarde
                 writer.writerow(["Date Scraping", "Date et Heure Événement", "Quantité Dés", "Lien Direct Récompense"])
