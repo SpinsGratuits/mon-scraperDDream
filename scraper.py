@@ -1,13 +1,13 @@
 import csv
 from datetime import datetime
-import cloudscraper  # Remplace requests pour contourner le blocage
+import cloudscraper
 from bs4 import BeautifulSoup
 import re
 
 # 1. URL du site cible
 url = "https://gamewave.fr"
 
-# Création d'un scraper qui imite un navigateur Chrome sur Windows
+# Création du scraper pour simuler un humain sur Google Chrome
 scraper = cloudscraper.create_scraper(browser={'browser': 'chrome', 'platform': 'windows', 'mobile': False})
 
 try:
@@ -17,7 +17,7 @@ try:
 except Exception as e:
     status_code = 500
     html_text = ""
-    print(f"Erreur lors du contournement du blocage : {e}")
+    print(f"Erreur de connexion : {e}")
 
 if status_code == 200:
     soup = BeautifulSoup(html_text, "html.parser")
@@ -25,34 +25,32 @@ if status_code == 200:
     
     table_data = []
     
-    # 2. Scanner TOUS les liens hypertextes de la page
-    all_links = soup.find_all("a", href=True)
+    # 2. On trouve le tableau de la page
+    table = soup.find("table")
     
-    for link in all_links:
-        href = link["href"]
-        
-        # Cibler n'importe quel lien contenant dicedreams.com
-        if "dicedreams.com" in href:
-            # Récupérer le bloc de texte entourant le lien
-            parent_text = link.find_parent().get_text(separator=" ").strip() if link.find_parent() else ""
-            if len(parent_text) < 15 and link.find_parent().find_parent():
-                parent_text = link.find_parent().find_parent().get_text(separator=" ").strip()
+    if table:
+        rows = table.find_all("tr")
+        for row in rows:
+            cells = row.find_all(["td", "th"])
             
-            clean_text = " ".join(parent_text.split())
-            
-            # Isoler la date (ex: 19/09/2026)
-            date_match = re.search(r'\d{2}/\d{2}/\d{4}', clean_text)
-            date_evenement = date_match.group(0) if date_match else "Date non détectée"
-            
-            # Déterminer la quantité de dés
-            des_match = re.search(r'\d+\s*(?:Dés|dés|Rolls|rolls|lancers)', clean_text)
-            quantite_des = des_match.group(0) if des_match else "50 Dés gratuits"
-            quantite_des = quantite_des.replace("Récupérer", "").strip()
-            
-            # Éviter les doublons
-            if not any(row[2] == href for row in table_data):
-                table_data.append([date_evenement, quantite_des, href])
-
+            # Si la ligne contient bien les informations du tableau (Date, Dés, Bouton)
+            if len(cells) >= 3:
+                date_heure = cells[0].text.strip()
+                des_gratuits = cells[1].text.strip()
+                
+                # Ignorer la ligne d'en-tête descriptive
+                if "Date" in date_heure or "Dés" in des_gratuits:
+                    continue
+                
+                # Récupérer le lien, PEU IMPORTE son adresse de départ
+                link_tag = cells[2].find("a", href=True)
+                if link_tag:
+                    lien_recompense = link_tag["href"]
+                    
+                    # Ignorer uniquement les liens vides ou internes au site
+                    if lien_recompense and not lien_recompense.startswith("#"):
+                        table_data.append([date_heure, des_gratuits, lien_recompense])
+    
     # 3. Écriture forcée du fichier CSV
     with open("data.csv", mode="w", newline="", encoding="utf-8") as file:
         writer = csv.writer(file)
@@ -61,11 +59,10 @@ if status_code == 200:
         if table_data:
             for row_data in table_data:
                 writer.writerow([date_now, row_data[0], row_data[1], row_data[2]])
-            print(f"Succès total ! {len(table_data)} liens trouvés et sauvegardés malgré la protection.")
+            print(f"Succès ! {len(table_data)} liens de récupération ont été extraits et sauvegardés.")
         else:
-            writer.writerow([date_now, "VIDE", "Aucun lien trouvé sur la page", "Vérifiez manuellement le site"])
-            print("Aucun lien extrait.")
+            writer.writerow([date_now, "VIDE", "La structure du tableau a changé sur le site", "Vérifiez le site"])
+            print("Aucun lien extrait après analyse approfondie.")
             
 else:
-    print(f"Erreur d'accès réseau (Code {status_code}). Le site bloque toujours.")
-
+    print(f"Erreur d'accès (Code {status_code}).")
