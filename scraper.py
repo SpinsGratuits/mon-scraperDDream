@@ -42,7 +42,7 @@ if status_code == 200:
             
             # Isoler la date (ex: 19/09/2026)
             date_match = re.search(r'\d{2}/\d{2}/\d{4}', clean_text)
-            date_evenement = date_match.group(0) if date_match else "Date non détectée"
+            date_evenement = date_match.group(0) if date_match else "Aujourd'hui"
             
             # Déterminer la quantité de dés
             des_match = re.search(r'\d+\s*(?:Dés|dés|Rolls|rolls|lancers)', clean_text)
