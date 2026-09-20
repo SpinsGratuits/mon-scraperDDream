@@ -40,7 +40,7 @@ if response.status_code == 200:
                 lien_recompense = link_tag["href"] if link_tag else "Pas de lien"
                 
                 # CORRECTION : Recherche plus souple du domaine dans l'URL pour ne rater aucun lien
-                if "dicedreams.com" in lien_recompense:
+                if "https://rewards.dicedreams.com" in lien_recompense:
                     table_data.append([date_heure, des_gratuits, lien_recompense])
 
         # 3. Écrire et écraser le fichier CSV avec la table complète
