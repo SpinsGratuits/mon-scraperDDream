@@ -34,7 +34,7 @@ if response.status_code == 200:
         file_exists = os.path.isfile("data.csv")
         
         # Enregistrement dans le CSV
-        with open("scapDiceDream.csv", mode="w", newline="", encoding="utf-8") as file:
+        with open("scrapDiceDreams.csv", mode="w", newline="", encoding="utf-8") as file:
             writer = csv.writer(file)
             if not file_exists:
                 writer.writerow(["Date Scraping", "Lien Cadeau Dice Dreams"])
