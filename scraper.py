@@ -4,31 +4,46 @@ from datetime import datetime
 import requests
 from bs4 import BeautifulSoup
 
-# 1. Lancer la requête sur le site cible
-url = "https://gamewave.fr/dice-dreams/dice-dreams-liens-des-lancers-de-des-gratuits/"  # Remplacez par le site de votre choix
+# 1. URL du site cible
+url = "https://gamewave.fr/dice-dreams/dice-dreams-liens-des-lancers-de-des-gratuits/"
 headers = {
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
 }
+
 response = requests.get(url, headers=headers)
 
 if response.status_code == 200:
     soup = BeautifulSoup(response.text, "html.parser")
-
-    # 2. Extraire la donnée (Exemple : le titre H1 du site)
-    title = soup.find("h1").text.strip() if soup.find("h1") else "Non trouvé"
     date_now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-
-    # 3. Préparer le fichier de sauvegarde
-    file_exists = os.path.isfile("data.csv")
-
-    # 4. Écrire dans le fichier CSV
-    with open("data.csv", mode="a", newline="", encoding="utf-8") as file:
-        writer = csv.writer(file)
-        if not file_exists:
-            writer.writerow(["Date", "Titre Extrait"])  # En-tête
-        writer.writerow([date_now, title])
-
-    print("Scraping réussi et données enregistrées !")
+    
+    # Trouver tous les liens hypertextes de la page
+    all_links = soup.find_all("a", href=True)
+    
+    # Filtrer pour ne garder que ceux qui commencent par l'adresse demandée
+    target_prefix = "https://rewards.dicedreams.com/?handler=reward&link="
+    scraped_links = []
+    
+    for link in all_links:
+        href = link["href"]
+        if href.startswith(target_prefix):
+            # Éviter les doublons dans la même session de scraping
+            if href not in scraped_links:
+                scraped_links.append(href)
+    
+    if scraped_links:
+        file_exists = os.path.isfile("data.csv")
+        
+        # Enregistrement dans le CSV
+        with open("data.csv", mode="a", newline="", encoding="utf-8") as file:
+            writer = csv.writer(file)
+            if not file_exists:
+                writer.writerow(["Date Scraping", "Lien Cadeau Dice Dreams"])
+            
+            for valid_link in scraped_links:
+                writer.writerow([date_now, valid_link])
+                
+        print(f"Succès ! {len(scraped_links)} liens trouvés et sauvegardés.")
+    else:
+        print("Aucun lien correspondant au préfixe n'a été trouvé sur la page.")
 else:
-    print(f"Erreur lors du scraping : {response.status_code}")
-
+    print(f"Erreur lors de l'accès au site : {response.status_code}")
