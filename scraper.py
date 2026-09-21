@@ -55,8 +55,8 @@ if status_code == 200:
                 # Structure sous forme de dictionnaire clé: valeur
                 json_data.append({
                     "Date Scraping": date_now,
-                    "Date": date_evenement,
-                    "Quant": quantite_des,
+                    "Date et Heure Evenement": date_evenement,
+                    "Quantite": quantite_des,
                     "Lien": href
                 })
 
