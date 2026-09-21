@@ -1,70 +1,94 @@
-import csv
+import json
 from datetime import datetime
-import cloudscraper  # Remplace requests pour contourner le blocage
+from playwright.sync_api import sync_playwright
 from bs4 import BeautifulSoup
-import re
 
-# 1. URL du site cible
 url = "https://gamewave.fr/dice-dreams/dice-dreams-liens-des-lancers-de-des-gratuits/"
 
-# Création d'un scraper qui imite un navigateur Chrome sur Windows
-scraper = cloudscraper.create_scraper(browser={'browser': 'chrome', 'platform': 'windows', 'mobile': False})
+def run_fast_scraper():
+html_text = ""
+with sync_playwright() as p:
+# Lancer le navigateur en mode ultra-léger
+browser = p.chromium.launch(headless=True)
+context = browser.new_context(
+user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+)
+page = context.new_page()
+
+# Bloquer le contenu lourd pour aller très vite
+page.route("**/*.{png,jpg,jpeg,gif,webp,svg,css,woff,woff2}", lambda route: route.abort())
 
 try:
-    response = scraper.get(url)
-    status_code = response.status_code
-    html_text = response.text
+# Charger la page avec une limite de 20 secondes max
+page.goto(url, wait_until="commit", timeout=20000)
+page.wait_for_timeout(3000)
+html_text = page.content()
 except Exception as e:
-    status_code = 500
-    html_text = ""
-    print(f"Erreur lors du contournement du blocage : {e}")
+print(f"Avertissement Timeout mais continuation : {e}")
+try:
+html_text = page.content()
+except:
+pass
 
-if status_code == 200:
-    soup = BeautifulSoup(html_text, "html.parser")
-    date_now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    
-    table_data = []
-    
-    # 2. Scanner TOUS les liens hypertextes de la page
-    all_links = soup.find_all("a", href=True)
-    
-    for link in all_links:
-        href = link["href"]
-        
-        # Cibler n'importe quel lien contenant dicedreams.com
-        if "dicedreams.com" in href:
-            # Récupérer le bloc de texte entourant le lien
-            parent_text = link.find_parent().get_text(separator=" ").strip() if link.find_parent() else ""
-            if len(parent_text) < 15 and link.find_parent().find_parent():
-                parent_text = link.find_parent().find_parent().get_text(separator=" ").strip()
-            
-            clean_text = " ".join(parent_text.split())
-            
-            # Isoler la date (ex: 19/09/2026)
-            date_match = re.search(r'\d{2}/\d{2}/\d{4}', clean_text)
-            date_evenement = date_match.group(0) if date_match else "Aujourd'hui"
-            
-            # Déterminer la quantité de dés
-            des_match = re.search(r'\d+\s*(?:Dés|dés|Rolls|rolls|lancers)', clean_text)
-            quantite_des = des_match.group(0) if des_match else "50 Dés gratuits"
-            quantite_des = quantite_des.replace("Récupérer", "").strip()
-            
-            # Éviter les doublons
-            if not any(row[2] == href for row in table_data):
-                table_data.append([date_evenement, quantite_des, href])
+browser.close()
+return html_text
 
-    # 3. Écriture forcée du fichier CSV
-    with open("scrapdicedreams.json", mode="w", newline="", encoding="utf-8") as file:
-        writer = csv.writer(file)
-        writer.writerow(["Date Scraping", "Date et Heure Événement", "Quantité Dés", "Lien Direct Récompense"])
-        
-        if table_data:
-            for row_data in table_data:
-                writer.writerow([date_now, row_data[0], row_data[1], row_data[2]])
-            print(f"Succès total ! {len(table_data)} liens trouvés et sauvegardés malgré la protection.")
-        else:
-            writer.writerow([date_now, "VIDE", "Aucun lien trouvé sur la page", "Vérifiez manuellement le site"])
-            print("Aucun lien extrait.")
-            
-else:
-    print(f"Erreur d'accès réseau (Code {status_code}). Le site bloque toujours.")
+1. Récupération du HTML
+html_content = run_fast_scraper()
+date_now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+json_data = []
+
+2. Analyse du code avec BeautifulSoup
+if html_content:
+soup = BeautifulSoup(html_content, "html.parser")
+table = soup.find("table")
+
+if table:
+rows = table.find_all("tr")
+for row in rows:
+cells = row.find_all(["td", "th"])
+if len(cells) >= 3:
+date_heure = cells[0].text.strip()
+des_gratuits = cells[1].text.strip()
+
+if "Date" in date_heure or "Dés" in des_gratuits:
+continue
+
+link_tag = cells.find("a", href=True)
+lien_recompense = link_tag["href"].strip() if link_tag else ""
+
+# Capturer le lien s'il est valide
+if lien_recompense and not lien_recompense.startswith("#") and "dicedreams.fr" not in lien_recompense:
+# Structure unitaire en dictionnaire pour le format JSON
+json_data.append({
+"date_evenement": date_heure,
+"quantite_des": des_gratuits,
+"lien_recompense": lien_recompense
+})
+
+3. Écritures de secours globales si la structure du tableau a échoué
+if not json_data and html_content:
+all_links = soup.find_all("a", href=True)
+for link in all_links:
+href = link["href"].strip()
+if "dicedreams" in href or "rewards" in href:
+json_data.append({
+"date_evenement": "Lien Direct",
+"quantite_des": "Dés Gratuits",
+"lien_recompense": href
+})
+
+4. Construction de l'objet final à sauvegarder
+output_object = {
+"derniere_mise_a_jour": date_now,
+"statut": "Succès" if json_data else "Aucune donnée trouvée",
+"liens": json_data
+}
+
+5. Écriture immédiate du fichier JSON (écrase le précédent)
+with open("scrapdicedreams.json", mode="w", encoding="utf-8") as file:
+# ensure_ascii=False permet de garder les accents français intacts dans le JSON
+# indent=4 permet de rendre le fichier JSON lisible à l'œil humain
+json.dump(output_object, file, ensure_ascii=False, indent=4)
+
+print(f"Succès ! {len(json_data)} lignes enregistrées au format JSON.")
