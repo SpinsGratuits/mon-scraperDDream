@@ -32,7 +32,7 @@ if status_code == 200:
         href = link["href"]
         
         # Cibler n'importe quel lien contenant dicedreams.com
-        if "join.domino-dreams.com" in href:
+        if "dicedreams.com" in href:
             # Récupérer le bloc de texte entourant le lien
             parent_text = link.find_parent().get_text(separator=" ").strip() if link.find_parent() else ""
             if len(parent_text) < 15 and link.find_parent().find_parent():
