@@ -55,9 +55,9 @@ if status_code == 200:
                 # Structure sous forme de dictionnaire clé: valeur
                 json_data.append({
                     "Date Scraping": date_now,
-                    "Date et Heure Evenement": date_evenement,
-                    "Quantite": quantite_des,
-                    "Lien": href
+                    "Date et Heure Evénement": date_evenement,
+                    "Quantité Dés": quantite_des,
+                    "Lien Direct Récompense": href
                 })
 
     # 3. Écriture du fichier JSON au lieu du CSV
@@ -82,3 +82,4 @@ if status_code == 200:
             
 else:
     print(f"Erreur d'accès réseau (Code {status_code}). Le site bloque toujours.")
+
