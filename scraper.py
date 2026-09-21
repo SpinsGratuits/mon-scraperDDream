@@ -1,4 +1,4 @@
-import csv
+import json
 from datetime import datetime
 import cloudscraper  # Remplace requests pour contourner le blocage
 from bs4 import BeautifulSoup
@@ -23,7 +23,8 @@ if status_code == 200:
     soup = BeautifulSoup(html_text, "html.parser")
     date_now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     
-    table_data = []
+    # Liste qui contiendra nos dictionnaires d'objets JSON
+    json_data = []
     
     # 2. Scanner TOUS les liens hypertextes de la page
     all_links = soup.find_all("a", href=True)
@@ -49,22 +50,35 @@ if status_code == 200:
             quantite_des = des_match.group(0) if des_match else "dés"
             quantite_des = quantite_des.replace("Récupérer", "").strip()
             
-            # Éviter les doublons
-            if not any(row[2] == href for row in table_data):
-                table_data.append([date_evenement, quantite_des, href])
+            # Éviter les doublons (on vérifie la clé 'Lien Direct Récompense' dans les dictionnaires existants)
+            if not any(item["Lien Direct Récompense"] == href for item in json_data):
+                # Structure sous forme de dictionnaire clé: valeur
+                json_data.append({
+                    "Date Scraping": date_now,
+                    "Date et Heure Evénement": date_evenement,
+                    "Quantité Dés": quantite_des,
+                    "Lien Direct Récompense": href
+                })
 
-    # 3. Écriture forcée du fichier CSV
-    with open("scrapdicedreams.csv", mode="w", newline="", encoding="utf-8") as file:
-        writer = csv.writer(file)
-        writer.writerow(["Date Scraping", "Date et Heure Événement", "Quantité Dés", "Lien Direct Récompense"])
-        
-        if table_data:
-            for row_data in table_data:
-                writer.writerow([date_now, row_data[0], row_data[1], row_data[2]])
-            print(f"Succès total ! {len(table_data)} liens trouvés et sauvegardés malgré la protection.")
-        else:
-            writer.writerow([date_now, "VIDE", "Aucun lien trouvé sur la page", "Vérifiez manuellement le site"])
-            print("Aucun lien extrait.")
+    # 3. Écriture du fichier JSON au lieu du CSV
+    filename = "scrapdicedreams.json"
+    
+    # Si aucun lien n'a été trouvé, on crée une structure d'erreur propre en JSON
+    if not json_data:
+        json_data.append({
+            "Date Scraping": date_now,
+            "Statut": "VIDE",
+            "Message": "Aucun lien trouvé sur la page. Vérifiez manuellement le site."
+        })
+        print("Aucun lien extrait.")
+    else:
+        print(f"Succès total ! {len(json_data)} liens trouvés et sauvegardés malgré la protection.")
+
+    # Écriture dans le fichier physique
+    with open(filename, mode="w", encoding="utf-8") as json_file:
+        # indent=4 : Crée des retours à la ligne propres (parfait pour les diffs GitHub)
+        # ensure_ascii=False : Conserve les accents français (ex: "Quantité", "Evénement")
+        json.dump(json_data, json_file, indent=4, ensure_ascii=False)
             
 else:
     print(f"Erreur d'accès réseau (Code {status_code}). Le site bloque toujours.")
