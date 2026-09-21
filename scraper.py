@@ -54,7 +54,7 @@ if status_code == 200:
                 table_data.append([date_evenement, quantite_des, href])
 
     # 3. Écriture forcée du fichier CSV
-    with open("scrapdicedreams.csv", mode="w", newline="", encoding="utf-8") as file:
+    with open("scrapdicedreams.json", mode="w", newline="", encoding="utf-8") as file:
         writer = csv.writer(file)
         writer.writerow(["Date Scraping", "Date et Heure Événement", "Quantité Dés", "Lien Direct Récompense"])
         
