@@ -55,9 +55,9 @@ if status_code == 200:
                 # Structure sous forme de dictionnaire clé: valeur
                 json_data.append({
                     "Date Scraping": date_now,
-                    "Date et Heure Evénement": date_evenement,
-                    "Quantité Dés": quantite_des,
-                    "Lien Direct Récompense": href
+                    "Date": date_evenement,
+                    "Quant": quantite_des,
+                    "Lien": href
                 })
 
     # 3. Écriture du fichier JSON au lieu du CSV
