@@ -51,13 +51,13 @@ if status_code == 200:
             quantite_des = quantite_des.replace("Récupérer", "").strip()
             
             # Éviter les doublons (on vérifie la clé 'Lien Direct Récompense' dans les dictionnaires existants)
-            if not any(item["lien_direct_recompense"] == href for item in json_data):
+            if not any(item["lienurl"] == href for item in json_data):
                 # Structure sous forme de dictionnaire clé: valeur
                 json_data.append({
                     "date_scraping": date_now,
-                    "date_et_heure_evenement": date_evenement,
+                    "date": date_evenement,
                     "quantite_des": quantite_des,
-                    "lien_direct_recompense": href
+                    "lienurl": href
                 })
 
     # 3. Écriture du fichier JSON au lieu du CSV
