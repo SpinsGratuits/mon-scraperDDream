@@ -54,10 +54,7 @@ if status_code == 200:
             if not any(item["lienurl"] == href for item in json_data):
                 # Structure sous forme de dictionnaire clé: valeur
                 json_data.append({
-                    "date_scraping": date_now,
-                    "date": date_evenement,
-                    "quantite_des": quantite_des,
-                    "lienurl": href
+                    "date_scraping": date_now, "date": date_evenement, "quantite_des": quantite_des, "lienurl": href
                 })
 
     # 3. Écriture du fichier JSON au lieu du CSV
