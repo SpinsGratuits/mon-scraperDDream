@@ -1,6 +1,6 @@
 import json
-from datetime import datetime
-import cloudscraper  # Remplace requests pour contourner le blocage
+from datetime import datetime, date
+import cloudscraper
 from bs4 import BeautifulSoup
 import re
 
@@ -22,6 +22,7 @@ except Exception as e:
 if status_code == 200:
     soup = BeautifulSoup(html_text, "html.parser")
     date_now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    date_du_jour = date.today().strftime("%d/%m/%Y")
     
     # Liste qui contiendra nos dictionnaires d'objets JSON
     json_data = []
@@ -32,12 +33,16 @@ if status_code == 200:
     for link in all_links:
         href = link["href"]
         
-        # Cibler n'importe quel lien contenant dicedreams.com
-        if "dicedreams.com" in href:
-            # Récupérer le bloc de texte entourant le lien
-            parent_text = link.find_parent().get_text(separator=" ").strip() if link.find_parent() else ""
-            if len(parent_text) < 15 and link.find_parent().find_parent():
-                parent_text = link.find_parent().find_parent().get_text(separator=" ").strip()
+        # Cibler n'importe quel lien contenant dicedreams.com (ou les redirections du site)
+        if "dicedreams.com" in href or "stg.fyi" in href:
+            # Récupérer le bloc de texte entourant le lien (remonte à la ligne <tr> du tableau si existant)
+            parent_tr = link.find_parent('tr')
+            if parent_tr:
+                parent_text = parent_tr.get_text(separator=" ").strip()
+            else:
+                parent_text = link.find_parent().get_text(separator=" ").strip() if link.find_parent() else ""
+                if len(parent_text) < 15 and link.find_parent().find_parent():
+                    parent_text = link.find_parent().find_parent().get_text(separator=" ").strip()
             
             clean_text = " ".join(parent_text.split())
             
@@ -50,21 +55,20 @@ if status_code == 200:
                 date_evenement = f"{date_courte_match.group(0)}/{date.today().year}" if date_courte_match else date_du_jour
             
             # --- EXTRACTION DE L'HEURE ---
-            # Cherche des formats comme "14:35", "08h15", "9h00"
+            # Capture les formats : "20:00", "16h00", "à 17:00"
             heure_match = re.search(r'\b\d{1,2}[h:]\d{2}\b', clean_text, re.IGNORECASE)
             if heure_match:
-                # Normalisation du format pour toujours avoir HH:MM (ex: 9h15 devient 09:15)
+                # Normalisation automatique (ex: 9h15 -> 09:15)
                 heure_brute = heure_match.group(0).lower().replace('h', ':')
                 if len(heure_brute.split(':')[0]) == 1:
                     heure_brute = "0" + heure_brute
                 heure_evenement = heure_brute
             else:
-                heure_evenement = "00:00"  # Valeur par défaut si non spécifiée
+                heure_evenement = "00:00"  # Valeur par défaut
             
-            # Déterminer la quantité de dés
-            des_match = re.search(r'\d+\s*(?:Dés|dés|Rolls|rolls|lancers)', clean_text)
-            quantite_des = des_match.group(0) if des_match else "dés"
-            quantite_des = quantite_des.replace("Récupérer", "").strip()
+            # --- EXTRACTION DE LA QUANTITÉ DE DÉS ---
+            des_match = re.search(r'\d+\s*(?:Dés|dés|Rolls|rolls|lancers)', clean_text, re.IGNORECASE)
+            quantite_des = des_match.group(0).strip() if des_match else "50 Dés"
             
             # Éviter les doublons de liens
             if not any(item["lienurl"] == href for item in json_data):
@@ -72,12 +76,12 @@ if status_code == 200:
                     "date_scraping": date_now, 
                     "date": date_evenement, 
                     "heure": heure_evenement,
-                    "recompense": type_recompense, 
+                    "quantite_des": quantite_des, 
                     "lienurl": href
                 })
 
     # 3. Écriture du fichier JSON
-    filename = "scrapcoinmaster.json"
+    filename = "scrapdicedreams.json"
     
     if not json_data:
         json_data.append({
@@ -94,27 +98,3 @@ if status_code == 200:
             
 else:
     print(f"Erreur d'accès réseau (Code {status_code}). Le site bloque toujours.")
-
-    # 3. Écriture du fichier JSON au lieu du CSV
-    filename = "scrapdicedreams.json"
-    
-    # Si aucun lien n'a été trouvé, on crée une structure d'erreur propre en JSON
-    if not json_data:
-        json_data.append({
-            "Date Scraping": date_now,
-            "Statut": "VIDE",
-            "Message": "Aucun lien trouvé sur la page. Vérifiez manuellement le site."
-        })
-        print("Aucun lien extrait.")
-    else:
-        print(f"Succès total ! {len(json_data)} liens trouvés et sauvegardés malgré la protection.")
-
-    # Écriture dans le fichier physique
-    with open(filename, mode="w", encoding="utf-8") as json_file:
-        # indent=4 : Crée des retours à la ligne propres (parfait pour les diffs GitHub)
-        # ensure_ascii=False : Conserve les accents français (ex: "Quantité", "Evénement")
-        json.dump(json_data, json_file, indent=4, ensure_ascii=False)
-            
-else:
-    print(f"Erreur d'accès réseau (Code {status_code}). Le site bloque toujours.")
-
