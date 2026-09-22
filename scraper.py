@@ -41,21 +41,59 @@ if status_code == 200:
             
             clean_text = " ".join(parent_text.split())
             
-            # Isoler la date (ex: 19/09/2026)
+            # --- EXTRACTION DE LA DATE ---
             date_match = re.search(r'\d{2}/\d{2}/\d{4}', clean_text)
-            date_evenement = date_match.group(0) if date_match else "Aujourd'hui"
+            if date_match:
+                date_evenement = date_match.group(0)
+            else:
+                date_courte_match = re.search(r'\b\d{2}/\d{2}\b', clean_text)
+                date_evenement = f"{date_courte_match.group(0)}/{date.today().year}" if date_courte_match else date_du_jour
+            
+            # --- EXTRACTION DE L'HEURE ---
+            # Cherche des formats comme "14:35", "08h15", "9h00"
+            heure_match = re.search(r'\b\d{1,2}[h:]\d{2}\b', clean_text, re.IGNORECASE)
+            if heure_match:
+                # Normalisation du format pour toujours avoir HH:MM (ex: 9h15 devient 09:15)
+                heure_brute = heure_match.group(0).lower().replace('h', ':')
+                if len(heure_brute.split(':')[0]) == 1:
+                    heure_brute = "0" + heure_brute
+                heure_evenement = heure_brute
+            else:
+                heure_evenement = "00:00"  # Valeur par défaut si non spécifiée
             
             # Déterminer la quantité de dés
             des_match = re.search(r'\d+\s*(?:Dés|dés|Rolls|rolls|lancers)', clean_text)
             quantite_des = des_match.group(0) if des_match else "dés"
             quantite_des = quantite_des.replace("Récupérer", "").strip()
             
-            # Éviter les doublons (on vérifie la clé 'Lien Direct Récompense' dans les dictionnaires existants)
+            # Éviter les doublons de liens
             if not any(item["lienurl"] == href for item in json_data):
-                # Structure sous forme de dictionnaire clé: valeur
                 json_data.append({
-                    "date_scraping": date_now, "date": date_evenement, "quantite_des": quantite_des, "lienurl": href
+                    "date_scraping": date_now, 
+                    "date": date_evenement, 
+                    "heure": heure_evenement,
+                    "recompense": type_recompense, 
+                    "lienurl": href
                 })
+
+    # 3. Écriture du fichier JSON
+    filename = "scrapcoinmaster.json"
+    
+    if not json_data:
+        json_data.append({
+            "date_scraping": date_now,
+            "statut": "VIDE",
+            "message": "Aucun lien trouvé sur la page. Vérifiez manuellement le site."
+        })
+        print("Aucun lien extrait.")
+    else:
+        print(f"Succès total ! {len(json_data)} liens trouvés et sauvegardés.")
+
+    with open(filename, mode="w", encoding="utf-8") as json_file:
+        json.dump(json_data, json_file, indent=4, ensure_ascii=False)
+            
+else:
+    print(f"Erreur d'accès réseau (Code {status_code}). Le site bloque toujours.")
 
     # 3. Écriture du fichier JSON au lieu du CSV
     filename = "scrapdicedreams.json"
