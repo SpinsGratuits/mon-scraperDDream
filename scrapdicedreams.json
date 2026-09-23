@@ -1,5 +1,21 @@
 [
-        {
+    {
+        "date_scraping": "2026/09/23 à 12:14",
+        "date": "23/09/2026",
+        "heure": "12:14",
+        "recompense": "Tours / Pièces",
+        "lienurl": "https://rewards.dicedreams.com/?handler=reward&link=CommunityPost_220926aqq",
+        "badge": "NEW"
+    },
+    {
+        "date_scraping": "2026/09/23 à 12:14",
+        "date": "23/09/2026",
+        "heure": "12:14",
+        "recompense": "Tours / Pièces",
+        "lienurl": "https://rewards.dicedreams.com/?handler=reward&link=CommunityPost_210926cza",
+        "badge": "NEW"
+    },
+    {
         "date_scraping": "2026-09-23 11:17:10",
         "date": "21/09/2026",
         "heure": "20:00",
