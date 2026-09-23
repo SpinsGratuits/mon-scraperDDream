@@ -3,7 +3,7 @@ name: Script de Scraping Périodique
 on:
   schedule:
     # Exécution à 08:00 et 20:00 (Heure française)
-    - cron: '15 2,6,14,18 * * *'
+    - cron: '07 * * * *'
   workflow_dispatch:
 
 jobs:
