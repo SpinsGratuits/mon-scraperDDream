@@ -1,11 +1,20 @@
 [
     {
-        "date_scraping": "30/09/2026 @ 16:21",
-        "date_scraping1": "30/09/2026 @ 16:21",
+        "date_scraping": "30/09/2026 @ 20:18",
+        "date_scraping1": "30/09/2026 @ 20:18",
         "date": "30/09/2026",
-        "heure": "16:21",
+        "heure": "20:18",
         "recompense": "Rolls gratuits",
-        "lienurl": "https://rewards.dicedreams.com/?handler=reward&link=CommunityStory_300926yhc",
+        "lienurl": "https://rewards.dicedreams.com/?handler=reward&link=CommunityPost_300926ccz",
+        "badge": "NEW"
+    },
+    {
+        "date_scraping": "30/09/2026 @ 20:18",
+        "date_scraping1": "30/09/2026 @ 20:18",
+        "date": "30/09/2026",
+        "heure": "20:18",
+        "recompense": "Rolls gratuits",
+        "lienurl": "https://rewards.dicedreams.com/?handler=reward&link=CommunityBroadcast_290926bbp",
         "badge": "NEW"
     },
     {
@@ -14,8 +23,17 @@
         "date": "30/09/2026",
         "heure": "16:21",
         "recompense": "Rolls gratuits",
+        "lienurl": "https://rewards.dicedreams.com/?handler=reward&link=CommunityStory_300926yhc",
+        "badge": ""
+    },
+    {
+        "date_scraping": "30/09/2026 @ 16:21",
+        "date_scraping1": "30/09/2026 @ 16:21",
+        "date": "30/09/2026",
+        "heure": "16:21",
+        "recompense": "Rolls gratuits",
         "lienurl": "https://d10xl.com/dicedreams/mOkmf",
-        "badge": "NEW"
+        "badge": ""
     },
     {
         "date_scraping": "29/09/2026 @ 16:20",
