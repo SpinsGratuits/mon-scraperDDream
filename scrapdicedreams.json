@@ -6,7 +6,7 @@
         "heure": "20:18",
         "recompense": "Rolls gratuits",
         "lienurl": "https://rewards.dicedreams.com/?handler=reward&link=CommunityPost_300926ccz",
-        "badge": "NEW"
+        "badge": ""
     },
     {
         "date_scraping": "30/09/2026 @ 20:18",
@@ -15,7 +15,7 @@
         "heure": "20:18",
         "recompense": "Rolls gratuits",
         "lienurl": "https://rewards.dicedreams.com/?handler=reward&link=CommunityBroadcast_290926bbp",
-        "badge": "NEW"
+        "badge": ""
     },
     {
         "date_scraping": "30/09/2026 @ 16:21",
@@ -123,24 +123,6 @@
         "heure": "04:16",
         "recompense": "Rolls gratuits",
         "lienurl": "https://rewards.dicedreams.com/?handler=reward&link=CommunityStory_260926wqs",
-        "badge": ""
-    },
-    {
-        "date_scraping": "25/09/2026 à 20:15",
-        "date_scraping1": "25/09/2026 @ 13:47",
-        "date": "25/09/2026",
-        "heure": "20:15",
-        "recompense": "Tours / Pièces",
-        "lienurl": "https://rewards.dicedreams.com/?handler=reward&link=CommunityStory_250926rds",
-        "badge": ""
-    },
-    {
-        "date_scraping": "25/09/2026 à 20:15",
-        "date_scraping1": "25/09/2026 @ 13:47",
-        "date": "25/09/2026",
-        "heure": "20:15",
-        "recompense": "Tours / Pièces",
-        "lienurl": "https://rewards.dicedreams.com/?handler=reward&link=CommunityPost_250926vvb",
         "badge": ""
     }
 ]
