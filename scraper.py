@@ -178,17 +178,8 @@ if status_code == 200:
         
     print(f"[Terminé] Fichier Dice Dreams {filename} mis à jour ({len(json_data)} liens valides).")
 
-    # --- 6. EXPORTATION FIRESTORE POUR L'APP ---
-    try:
-        db.collection("dice_dreams").document("current_links").set({
-            "links": json_data,
-            "updated_at": firestore.SERVER_TIMESTAMP
-        })
-        print("[Firebase] Liste complète Dice Dreams synchronisée avec succès.")
-    except Exception as e:
-        print(f"[Firebase] [Erreur] Échec de la synchronisation de la liste : {e}")
 
-    # --- 7. EXPORTATION VERS LA COLLECTION DE NOTIFICATION ---
+    # --- 6. EXPORTATION VERS LA COLLECTION DE NOTIFICATION ---
     if nouveaux_liens_detectes > 0:
         try:
             # Crée un document unique qui déclenche l'envoi push automatisé
