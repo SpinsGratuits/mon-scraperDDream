@@ -4,12 +4,13 @@ import re
 from datetime import datetime, timedelta
 import cloudscraper
 from bs4 import BeautifulSoup
+import firebase_admin
+from firebase_admin import credentials, firestore
 
 # --- 1. CONFIGURATION ---
 url = "https://mosttechs.com/free-dice-dreams-rolls/"
 filename = "scrapdicedreams.json"
 
-# Dictionnaire incluant les noms complets et les abréviations de la page
 mois_en_to_num = {
     "january": "01", "jan": "01", "januray": "01",
     "february": "02", "feb": "02", "february ": "02",
@@ -29,6 +30,19 @@ now = datetime.now()
 date_now_str = now.strftime("%d/%m/%Y @ %H:%M")
 heure_actuelle_str = now.strftime("%H:%M")
 limite_conservation = now - timedelta(days=6)
+
+# --- 1B. INITIALISATION FIREBASE ---
+firebase_key_raw = os.environ.get('FIREBASE_KEY')
+if not firebase_key_raw:
+    raise ValueError("Le secret FIREBASE_KEY est introuvable dans l'environnement.")
+
+# Vérification pour éviter les conflits d'initialisation en multi-script
+if not firebase_admin._apps:
+    cred_json = json.loads(firebase_key_raw)
+    cred = credentials.Certificate(cred_json)
+    firebase_admin.initialize_app(cred)
+
+db = firestore.client()
 
 # --- 2. CHARGEMENT & NETTOYAGE DE L'HISTORIQUE ---
 anciens_liens = {}
@@ -63,19 +77,19 @@ except Exception as e:
 if status_code == 200:
     soup = BeautifulSoup(html_text, "html.parser")
     json_data = []
-    liens_visites_session = set()  # Optimisation des performances anti-doublons
+    liens_visites_session = set() 
+    nouveaux_liens_detectes = 0  # Compteur dédié au déclenchement des pushs
     
     entry_content = soup.find(class_="entry-content")
     if not entry_content:
         entry_content = soup
         
     # --- 3. PARCOURS DE LA STRUCTURE TEXTUELLE ---
-    current_date_str = now.strftime("%d/%m/%Y")  # Valeur par défaut
+    current_date_str = now.strftime("%d/%m/%Y")  
     
     for element in entry_content.find_all(["p", "ul", "ol", "strong"]):
         text = element.get_text().strip().lower()
         
-        # Détection d'une ligne de date (\s+ gère les espaces irréguliers)
         match_date = re.search(r'(\d{1,2})\s+([a-z]{3,})\s+(\d{4})', text)
         if match_date:
             jour = match_date.group(1).zfill(2)
@@ -111,14 +125,13 @@ if status_code == 200:
                 
                 type_recompense = "Rolls gratuits"
                 
-                # --- STRATÉGIE DE RECONSTITUTION ET DE CONSERVATION DU BADGE NEW (6 HEURES) ---
+                # --- STRATÉGIE CONSERVATION DU BADGE NEW (6 HEURES) ---
                 if href in anciens_liens:
                     date_premier_scraping_str = anciens_liens[href].get("date_scraping", date_now_str)
                     badge_actuel = ""
                     
                     try:
                         date_premier_scraping = datetime.strptime(date_premier_scraping_str, "%d/%m/%Y @ %H:%M")
-                        # Conservation du badge si le lien a moins de 6 heures
                         if now - date_premier_scraping < timedelta(hours=6):
                             badge_actuel = "NEW"
                     except:
@@ -135,6 +148,7 @@ if status_code == 200:
                     })
                 else:
                     # Nouveau lien trouvé
+                    nouveaux_liens_detectes += 1
                     date_scraping1_combinee = f"{current_date_str} @ {heure_actuelle_str}"
                     json_data.append({
                         "date_scraping": date_now_str, 
@@ -158,11 +172,35 @@ if status_code == 200:
 
     json_data.sort(key=extraire_cle_parution, reverse=True)
 
-    # --- 5. ENREGISTREMENT ---
+    # --- 5. ENREGISTREMENT LOCAL ---
     with open(filename, mode="w", encoding="utf-8") as json_file:
         json.dump(json_data, json_file, indent=4, ensure_ascii=False)
         
     print(f"[Terminé] Fichier Dice Dreams {filename} mis à jour ({len(json_data)} liens valides).")
+
+    # --- 6. EXPORTATION FIRESTORE POUR L'APP ---
+    try:
+        db.collection("dice_dreams").document("current_links").set({
+            "links": json_data,
+            "updated_at": firestore.SERVER_TIMESTAMP
+        })
+        print("[Firebase] Liste complète Dice Dreams synchronisée avec succès.")
+    except Exception as e:
+        print(f"[Firebase] [Erreur] Échec de la synchronisation de la liste : {e}")
+
+    # --- 7. EXPORTATION VERS LA COLLECTION DE NOTIFICATION ---
+    if nouveaux_liens_detectes > 0:
+        try:
+            # Crée un document unique qui déclenche l'envoi push automatisé
+            db.collection("notifications").add({
+                "title": "🎲 Lancers Dice Dreams ! 🎁",
+                "body": "De nouveaux lancers gratuits viennent d'être ajoutés. Roulez vite !",
+                "nom_du_jeu": "dice_dreams",  # Utilisé pour le filtrage par Topic dans l'app
+                "created_at": firestore.SERVER_TIMESTAMP
+            })
+            print(f"[Firebase] Notification Dice Dreams envoyée sur la collection globale. Envoi push imminent !")
+        except Exception as e:
+            print(f"[Firebase] [Erreur] Impossible d'écrire l'alerte push : {e}")
             
 else:
     print(f"[Erreur] Échec de la communication réseau avec Mosttechs (Code {status_code}).")
