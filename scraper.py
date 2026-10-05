@@ -193,8 +193,8 @@ if status_code == 200:
         try:
             # Crée un document unique qui déclenche l'envoi push automatisé
             db.collection("notifications").add({
-                "title": "🎲 Lancers Dice Dreams ! 🎁",
-                "body": "De nouveaux lancers gratuits viennent d'être ajoutés. Roulez vite !",
+                "title": "🎲 Dice Reward ! 🎁",
+                "body": "New free spins have just been added !",
                 "nom_du_jeu": "dice_dreams",  # Utilisé pour le filtrage par Topic dans l'app
                 "created_at": firestore.SERVER_TIMESTAMP
             })
