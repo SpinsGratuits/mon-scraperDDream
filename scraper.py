@@ -178,20 +178,34 @@ if status_code == 200:
         
     print(f"[Terminé] Fichier Dice Dreams {filename} mis à jour ({len(json_data)} liens valides).")
 
-
-    # --- 6. EXPORTATION VERS LA COLLECTION DE NOTIFICATION ---
+    # --- 6. EXPORTATION ET ENVOI DIRECT DU PUSH ---
     if nouveaux_liens_detectes > 0:
         try:
-            # Crée un document unique qui déclenche l'envoi push automatisé
+            from firebase_admin import messaging  # Import indispensable pour l'antenne radio
+            
+            # 1. Écriture optionnelle d'historique dans Firestore
             db.collection("notifications").add({
                 "title": "🎲 Dice Reward ! 🎁",
                 "body": "New free spins have just been added !",
-                "nom_du_jeu": "dice_dreams",  # Utilisé pour le filtrage par Topic dans l'app
+                "nom_du_jeu": "dice_dreams",
                 "created_at": firestore.SERVER_TIMESTAMP
             })
-            print(f"[Firebase] Notification Dice Dreams envoyée sur la collection globale. Envoi push imminent !")
+            print("[Firebase] Enregistrement d'historique créé.")
+
+            # 2. PROPULSION DIRECTE DU SIGNAL VERS LES SMARTPHONES ABONNÉS
+            message = messaging.Message(
+                notification=messaging.Notification(
+                    title="🎲 Dice Reward ! 🎁",
+                    body="New free spins have just been added !"
+                ),
+                topic="dice_dreams"  # Envoie directement sur le canal écouté par votre action 6
+            )
+            
+            response = messaging.send(message)
+            print(f"[Firebase Push] Notification propulsée en direct avec succès ! (ID: {response})")
+            
         except Exception as e:
-            print(f"[Firebase] [Erreur] Impossible d'écrire l'alerte push : {e}")
+            print(f"[Firebase] [Erreur] Impossible d'écrire ou d'envoyer l'alerte push direct : {e}")
             
 else:
     print(f"[Erreur] Échec de la communication réseau avec Mosttechs (Code {status_code}).")
