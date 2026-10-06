@@ -1,5 +1,13 @@
 [
-
+    {
+        "date_scraping": "06/10/2026 @ 17:10",
+        "date_scraping1": "06/10/2026 @ 17:10",
+        "date": "06/10/2026",
+        "heure": "17:10",
+        "recompense": "Rolls gratuits",
+        "lienurl": "https://rewards.dicedreams.com/?handler=reward&link=CommunityStory_061026bla",
+        "badge": "NEW"
+    },
     {
         "date_scraping": "06/10/2026 @ 16:20",
         "date_scraping1": "06/10/2026 @ 16:20",
@@ -16,7 +24,7 @@
         "heure": "11:08",
         "recompense": "Rolls gratuits",
         "lienurl": "https://rewards.dicedreams.com/?handler=reward&link=CommunityPost_051026bba",
-        "badge": "NEW"
+        "badge": ""
     },
     {
         "date_scraping": "05/10/2026 @ 16:20",
