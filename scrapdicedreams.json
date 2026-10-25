@@ -6,7 +6,7 @@
         "heure": "17:10",
         "recompense": "Rolls gratuits",
         "lienurl": "https://rewards.dicedreams.com/?handler=reward&link=CommunityPost_241026",
-        "badge": "NEW"
+        "badge": ""
     },
     {
         "date_scraping": "24/10/2026 @ 17:10",
@@ -15,7 +15,7 @@
         "heure": "17:10",
         "recompense": "Rolls gratuits",
         "lienurl": "https://rewards.dicedreams.com/?handler=reward&link=CommunityStory_241026zqa",
-        "badge": "NEW"
+        "badge": ""
     },
     {
         "date_scraping": "23/10/2026 @ 18:52",
@@ -96,42 +96,6 @@
         "heure": "19:06",
         "recompense": "Rolls gratuits",
         "lienurl": "https://d10xl.com/dicedreams/63nW4",
-        "badge": ""
-    },
-    {
-        "date_scraping": "20/10/2026 @ 18:53",
-        "date_scraping1": "20/10/2026 @ 18:53",
-        "date": "20/10/2026",
-        "heure": "18:53",
-        "recompense": "Rolls gratuits",
-        "lienurl": "https://rewards.dicedreams.com/?handler=reward&link=CommunityBroadcast_201026ccz",
-        "badge": ""
-    },
-    {
-        "date_scraping": "20/10/2026 @ 18:53",
-        "date_scraping1": "20/10/2026 @ 18:53",
-        "date": "20/10/2026",
-        "heure": "18:53",
-        "recompense": "Rolls gratuits",
-        "lienurl": "https://rewards.dicedreams.com/?handler=reward&link=CommunityStory_201026ccz",
-        "badge": ""
-    },
-    {
-        "date_scraping": "20/10/2026 @ 18:53",
-        "date_scraping1": "20/10/2026 @ 18:53",
-        "date": "20/10/2026",
-        "heure": "18:53",
-        "recompense": "Rolls gratuits",
-        "lienurl": "https://rewards.dicedreams.com/?handler=reward&link=CommunityPost_201026xxa",
-        "badge": ""
-    },
-    {
-        "date_scraping": "20/10/2026 @ 13:33",
-        "date_scraping1": "20/10/2026 @ 13:33",
-        "date": "20/10/2026",
-        "heure": "13:33",
-        "recompense": "Rolls gratuits",
-        "lienurl": "https://rewards.dicedreams.com/?handler=reward&link=CommunityPost_Trading_201026",
         "badge": ""
     }
 ]
