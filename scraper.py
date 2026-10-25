@@ -117,7 +117,7 @@ if status_code == 200:
             if any(p in href.lower() for p in ["twitter.com", "facebook.com", "whatsapp", "pinterest", "reddit.com"]):
                 continue
                 
-            keywords = ["dicedreams", "superplay", "t.co", "bit.ly"]
+            keywords = ["dicedreams", "superplay", "t.co", "bit.ly", "d10xl"]
             if any(key in href.lower() for key in keywords):
                 
                 try:
