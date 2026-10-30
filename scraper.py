@@ -266,7 +266,7 @@ with open(filename, mode="w", encoding="utf-8") as json_file:
 json.dump(json_data, json_file, indent=4, ensure_ascii=False)
 print(f"[Terminé] Fichier Dice Dreams {filename} mis à jour ({len(json_data)} liens valides).")
 
---- 6. PUSH FIREBASE (inchangé) ---
+--- 6. PUSH FIREBASE ---
 
 if nouveaux_liens_detectes > 0:
 try:
@@ -289,3 +289,9 @@ response = messaging.send(message)
 print(f"[Firebase Push] Notification propulsée en direct avec succès ! (ID: {response})")
 except Exception as e:
 print(f"[Firebase] [Erreur] Impossible d'écrire ou d'envoyer l'alerte push direct : {e}")
+
+<FollowUp>
+Si tu rencontres un autre comportement inattendu, indique-moi :
+* Si les logs Firebase affichent des **erreurs d'authentification**.
+* Si la structure du **fichier JSON final** généré te convient.
+</FollowUp>
