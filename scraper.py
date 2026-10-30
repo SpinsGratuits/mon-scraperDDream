@@ -289,9 +289,3 @@ response = messaging.send(message)
 print(f"[Firebase Push] Notification propulsée en direct avec succès ! (ID: {response})")
 except Exception as e:
 print(f"[Firebase] [Erreur] Impossible d'écrire ou d'envoyer l'alerte push direct : {e}")
-
-<FollowUp>
-Si tu rencontres un autre comportement inattendu, indique-moi :
-* Si les logs Firebase affichent des **erreurs d'authentification**.
-* Si la structure du **fichier JSON final** généré te convient.
-</FollowUp>
