@@ -230,62 +230,61 @@ if status_code == 200:
                         json_data.append({
                             "source": "gamewave",
                             "date_scraping": date_now_str, 
-"date_scraping1": f"{current_date_str} @ {heure_str}",
-"date": current_date_str,
-"heure": heure_str,
-"recompense": recompense_text,
-"lienurl": href,
-"badge": "NEW"
-})
+                            "date_scraping1": f"{current_date_str} @ {heure_str}",
+                            "date": current_date_str,  
+                            "heure": heure_str,
+                            "recompense": recompense_text, 
+                            "lienurl": href,
+                            "badge": "NEW" 
+                        })
 else:
-print(f"[Erreur] Échec de la communication réseau avec Gamewave (Code {status_code}).")
-
-=====================================================================
+    print(f"[Erreur] Échec de la communication réseau avec Gamewave (Code {status_code}).")
 
 
---- 4. TRAITEMENT FINAL & ENREGISTREMENT ---
-
-
-=====================================================================
-
+# =====================================================================
+# --- 4. TRAITEMENT FINAL & ENREGISTREMENT ---
+# =====================================================================
 if not json_data and anciens_liens:
-json_data = list(anciens_liens.values())
+    json_data = list(anciens_liens.values())
 
-Tri chronologique
-
+# Tri chronologique
 def extraire_cle_parution(item):
-try:
-return datetime.strptime(item.get("date", ""), "%d/%m/%Y").timestamp()
-except:
-return 0
+    try:
+        return datetime.strptime(item.get("date", ""), "%d/%m/%Y").timestamp()
+    except:
+        return 0
+
 json_data.sort(key=extraire_cle_parution, reverse=True)
 
-Enregistrement local
-
+# Enregistrement local
 with open(filename, mode="w", encoding="utf-8") as json_file:
-json.dump(json_data, json_file, indent=4, ensure_ascii=False)
+    json.dump(json_data, json_file, indent=4, ensure_ascii=False)
+    
 print(f"[Terminé] Fichier Dice Dreams {filename} mis à jour ({len(json_data)} liens valides).")
 
---- 6. PUSH FIREBASE ---
-
+# --- 6. PUSH FIREBASE ---
 if nouveaux_liens_detectes > 0:
-try:
-from firebase_admin import messaging
-db.collection("notifications").add({
-"title": "🎲 Dice Reward ! 🎁",
-"body": "New free spins have just been added !",
-"nom_du_jeu": "dice_dreams",
-"created_at": firestore.SERVER_TIMESTAMP
-})
-print("[Firebase] Enregistrement d'historique créé.")
-message = messaging.Message(
-notification=messaging.Notification(
-title="🎲 Dice Reward ! 🎁",
-body="New free spins have just been added !"
-),
-topic="dice_dreams"
-)
-response = messaging.send(message)
-print(f"[Firebase Push] Notification propulsée en direct avec succès ! (ID: {response})")
-except Exception as e:
-print(f"[Firebase] [Erreur] Impossible d'écrire ou d'envoyer l'alerte push direct : {e}")
+    try:
+        from firebase_admin import messaging
+        
+        db.collection("notifications").add({
+            "title": "🎲 Dice Reward ! 🎁",
+            "body": "New free spins have just been added !",
+            "nom_du_jeu": "dice_dreams",
+            "created_at": firestore.SERVER_TIMESTAMP
+        })
+        print("[Firebase] Enregistrement d'historique créé.")
+
+        message = messaging.Message(
+            notification=messaging.Notification(
+                title="🎲 Dice Reward ! 🎁",
+                body="New free spins have just been added !"
+            ),
+            topic="dice_dreams"
+        )
+        
+        response = messaging.send(message)
+        print(f"[Firebase Push] Notification propulsée en direct avec succès ! (ID: {response})")
+        
+    except Exception as e:
+        print(f"[Firebase] [Erreur] Impossible d'écrire ou d'envoyer l'alerte push direct : {e}")
