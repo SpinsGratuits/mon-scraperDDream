@@ -7,7 +7,7 @@
         "heure": "19:00",
         "recompense": "50 Dés gratuits",
         "lienurl": "https://rewards.dicedreams.com/?handler=reward&link=CommunityReel_281026cad",
-        "badge": "NEW"
+        "badge": ""
     },
     {
         "source": "gamewave",
@@ -17,7 +17,7 @@
         "heure": "19:00",
         "recompense": "50 Dés gratuits",
         "lienurl": "https://rewards.dicedreams.com/?handler=reward&link=CommunityBroadcast_281026xla",
-        "badge": "NEW"
+        "badge": ""
     },
     {
         "source": "mosttechs",
@@ -47,7 +47,7 @@
         "heure": "19:00",
         "recompense": "50 Dés gratuits",
         "lienurl": "https://rewards.dicedreams.com/?handler=reward&link=CommunityWhatsapp_271026",
-        "badge": "NEW"
+        "badge": ""
     },
     {
         "source": "mosttechs",
@@ -117,6 +117,6 @@
         "heure": "18:00",
         "recompense": "50 Dés gratuits",
         "lienurl": "https://rewards.dicedreams.com/?handler=reward&link=CommunityPost_251026czz",
-        "badge": "NEW"
+        "badge": ""
     }
 ]
