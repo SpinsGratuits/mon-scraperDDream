@@ -8,7 +8,8 @@ import firebase_admin
 from firebase_admin import credentials, firestore
 
 # --- 1. CONFIGURATION ---
-url = "https://mosttechs.com/free-dice-dreams-rolls/"
+url_mosttechs = "https://mosttechs.com/free-dice-dreams-rolls/"
+url_gamewave = "https://gamewave.fr/dice-dreams/dice-dreams-liens-des-lancers-de-des-gratuits/"
 filename = "scrapdicedreams.json"
 
 mois_en_to_num = {
@@ -36,7 +37,6 @@ firebase_key_raw = os.environ.get('FIREBASE_KEY')
 if not firebase_key_raw:
     raise ValueError("Le secret FIREBASE_KEY est introuvable dans l'environnement.")
 
-# Vérification pour éviter les conflits d'initialisation en multi-script
 if not firebase_admin._apps:
     cred_json = json.loads(firebase_key_raw)
     cred = credentials.Certificate(cred_json)
@@ -62,29 +62,28 @@ if os.path.exists(filename):
     except Exception as e:
         print(f"[Attention] Impossible de lire l'historique JSON : {e}")
 
-# Client anti-bot pour contourner Cloudflare de Mosttechs
+# Client anti-bot pour contourner Cloudflare
 scraper = cloudscraper.create_scraper(browser={'browser': 'chrome', 'platform': 'windows', 'mobile': False})
 
+json_data = []
+liens_visites_session = set() 
+nouveaux_liens_detectes = 0
+
+# =====================================================================
+# --- 3A. SCRAPING DE MOSTTECHS ---
+# =====================================================================
 try:
-    response = scraper.get(url, timeout=15)
+    response = scraper.get(url_mosttechs, timeout=15)
     status_code = response.status_code
     html_text = response.text
 except Exception as e:
     status_code = 500
     html_text = ""
-    print(f"[Erreur] Connexion impossible : {e}")
+    print(f"[Erreur Mosttechs] Connexion impossible : {e}")
 
 if status_code == 200:
     soup = BeautifulSoup(html_text, "html.parser")
-    json_data = []
-    liens_visites_session = set() 
-    nouveaux_liens_detectes = 0  # Compteur dédié au déclenchement des pushs
-    
-    entry_content = soup.find(class_="entry-content")
-    if not entry_content:
-        entry_content = soup
-        
-    # --- 3. PARCOURS DE LA STRUCTURE TEXTUELLE ---
+    entry_content = soup.find(class_="entry-content") or soup
     current_date_str = now.strftime("%d/%m/%Y")  
     
     for element in entry_content.find_all(["p", "ul", "ol", "strong"]):
@@ -95,14 +94,12 @@ if status_code == 200:
             jour = match_date.group(1).zfill(2)
             nom_mois = match_date.group(2)
             annee = match_date.group(3)
-            
             num_mois = mois_en_to_num.get(nom_mois, "01")
             current_date_str = f"{jour}/{num_mois}/{annee}"
             continue  
-       # 🟢 AJOUT : On vérifie si la date de la section actuelle est trop vieille (inférieure à limite_conservation)
+            
         try:
             date_section = datetime.strptime(current_date_str, "%d/%m/%Y")
-            # Si la date lue sur le site est plus vieille que notre limite, on ignore tous ses liens
             if date_section < limite_conservation:
                 continue
         except:
@@ -111,33 +108,20 @@ if status_code == 200:
         links = element.find_all("a", href=True)
         for link in links:
             href = link["href"].strip()
-            
-            if href.startswith("/") or "t.me" in href.lower() or "telegram.me" in href.lower():
-                continue
-            if any(p in href.lower() for p in ["twitter.com", "facebook.com", "whatsapp", "pinterest", "reddit.com"]):
+            if href.startswith("/") or any(p in href.lower() for p in ["t.me", "telegram.me", "twitter.com", "facebook.com", "whatsapp", "pinterest", "reddit.com"]):
                 continue
                 
             keywords = ["dicedreams", "superplay", "t.co", "bit.ly", "d10xl"]
             if any(key in href.lower() for key in keywords):
-                
-                try:
-                    date_objet = datetime.strptime(current_date_str, "%d/%m/%Y")
-                    if date_objet < limite_conservation:
-                        continue  
-                except:
-                    pass
-                
                 if href in liens_visites_session:
                     continue
                 liens_visites_session.add(href)
                 
                 type_recompense = "Rolls gratuits"
                 
-                # --- STRATÉGIE CONSERVATION DU BADGE NEW (6 HEURES) ---
                 if href in anciens_liens:
                     date_premier_scraping_str = anciens_liens[href].get("date_scraping", date_now_str)
                     badge_actuel = ""
-                    
                     try:
                         date_premier_scraping = datetime.strptime(date_premier_scraping_str, "%d/%m/%Y @ %H:%M")
                         if now - date_premier_scraping < timedelta(hours=6):
@@ -146,6 +130,7 @@ if status_code == 200:
                         badge_actuel = anciens_liens[href].get("badge", "")
 
                     json_data.append({
+                        "source": anciens_liens[href].get("source", "mosttechs"),
                         "date_scraping": date_premier_scraping_str, 
                         "date_scraping1": anciens_liens[href].get("date_scraping1", f"{current_date_str} @ {heure_actuelle_str}"),
                         "date": current_date_str,  
@@ -155,65 +140,152 @@ if status_code == 200:
                         "badge": badge_actuel
                     })
                 else:
-                    # Nouveau lien trouvé
                     nouveaux_liens_detectes += 1
-                    date_scraping1_combinee = f"{current_date_str} @ {heure_actuelle_str}"
                     json_data.append({
+                        "source": "mosttechs",
                         "date_scraping": date_now_str, 
-                        "date_scraping1": date_scraping1_combinee,
+                        "date_scraping1": f"{current_date_str} @ {heure_actuelle_str}",
                         "date": current_date_str,  
                         "heure": heure_actuelle_str,
                         "recompense": type_recompense, 
                         "lienurl": href,
                         "badge": "NEW" 
                     })
-
-    if not json_data and anciens_liens:
-        json_data = list(anciens_liens.values())
-
-    # --- 4. TRI CHRONOLOGIQUE ---
-    def extraire_cle_parution(item):
-        try:
-            return datetime.strptime(item.get("date", ""), "%d/%m/%Y").timestamp()
-        except:
-            return 0
-
-    json_data.sort(key=extraire_cle_parution, reverse=True)
-
-    # --- 5. ENREGISTREMENT LOCAL ---
-    with open(filename, mode="w", encoding="utf-8") as json_file:
-        json.dump(json_data, json_file, indent=4, ensure_ascii=False)
-        
-    print(f"[Terminé] Fichier Dice Dreams {filename} mis à jour ({len(json_data)} liens valides).")
-
-    # --- 6. EXPORTATION ET ENVOI DIRECT DU PUSH ---
-    if nouveaux_liens_detectes > 0:
-        try:
-            from firebase_admin import messaging  # Import indispensable pour l'antenne radio
-            
-            # 1. Écriture optionnelle d'historique dans Firestore
-            db.collection("notifications").add({
-                "title": "🎲 Dice Reward ! 🎁",
-                "body": "New free spins have just been added !",
-                "nom_du_jeu": "dice_dreams",
-                "created_at": firestore.SERVER_TIMESTAMP
-            })
-            print("[Firebase] Enregistrement d'historique créé.")
-
-            # 2. PROPULSION DIRECTE DU SIGNAL VERS LES SMARTPHONES ABONNÉS
-            message = messaging.Message(
-                notification=messaging.Notification(
-                    title="🎲 Dice Reward ! 🎁",
-                    body="New free spins have just been added !"
-                ),
-                topic="dice_dreams"  # Envoie directement sur le canal écouté par votre action 6
-            )
-            
-            response = messaging.send(message)
-            print(f"[Firebase Push] Notification propulsée en direct avec succès ! (ID: {response})")
-            
-        except Exception as e:
-            print(f"[Firebase] [Erreur] Impossible d'écrire ou d'envoyer l'alerte push direct : {e}")
-            
 else:
     print(f"[Erreur] Échec de la communication réseau avec Mosttechs (Code {status_code}).")
+
+
+# =====================================================================
+# --- 3B. SCRAPING DE GAMEWAVE ---
+# =====================================================================
+try:
+    response = scraper.get(url_gamewave, timeout=15)
+    status_code = response.status_code
+    html_text = response.text
+except Exception as e:
+    status_code = 500
+    html_text = ""
+    print(f"[Erreur Gamewave] Connexion impossible : {e}")
+
+if status_code == 200:
+    soup = BeautifulSoup(html_text, "html.parser")
+    
+    # Recherche du tableau des liens
+    table = soup.find("table")
+    if table:
+        rows = table.find_all("tr")[1:]  # On ignore l'en-tête (Date et heure | Dés gratuits | Lien quotidien)
+        for row in rows:
+            cols = row.find_all("td")
+            if len(cols) >= 3:
+                date_heure_text = cols[0].get_text().strip()  # Format ex: "29/10/2026 à 19:00"
+                recompense_text = cols[1].get_text().strip()  # Format ex: "50 Dés gratuits"
+                link_tag = cols[2].find("a", href=True)
+                
+                if link_tag:
+                    href = link_tag["href"].strip()
+                    
+                    # Extraction propre de la date et de l'heure
+                    match = re.search(r'(\d{2}/\d{2}/\d{4})\s+à\s+(\d{2}:\d{2})', date_heure_text)
+                    if match:
+                        current_date_str = match.group(1)
+                        heure_str = match.group(2)
+                    else:
+                        current_date_str = now.strftime("%d/%m/%Y")
+                        heure_str = "00:00"
+                        
+                    # Vérification de la validité de la date
+                    try:
+                        date_section = datetime.strptime(current_date_str, "%d/%m/%Y")
+                        if date_section < limite_conservation:
+                            continue
+                    except:
+                        pass
+                        
+                    if href in liens_visites_session:
+                        continue
+                    liens_visites_session.add(href)
+                    
+                    if href in anciens_liens:
+                        date_premier_scraping_str = anciens_liens[href].get("date_scraping", date_now_str)
+                        badge_actuel = ""
+                        try:
+                            date_premier_scraping = datetime.strptime(date_premier_scraping_str, "%d/%m/%Y @ %H:%M")
+                            if now - date_premier_scraping < timedelta(hours=6):
+                                badge_actuel = "NEW"
+                        except:
+                            badge_actuel = anciens_liens[href].get("badge", "")
+
+                        json_data.append({
+                            "source": anciens_liens[href].get("source", "gamewave"),
+                            "date_scraping": date_premier_scraping_str, 
+                            "date_scraping1": anciens_liens[href].get("date_scraping1", f"{current_date_str} @ {heure_str}"),
+                            "date": current_date_str,  
+                            "heure": anciens_liens[href].get("heure", heure_str),
+                            "recompense": anciens_liens[href].get("recompense", recompense_text), 
+                            "lienurl": href,
+                            "badge": badge_actuel
+                        })
+                    else:
+                        nouveaux_liens_detectes += 1
+                        json_data.append({
+                            "source": "gamewave",
+                            "date_scraping": date_now_str, 
+"date_scraping1": f"{current_date_str} @ {heure_str}",
+"date": current_date_str,
+"heure": heure_str,
+"recompense": recompense_text,
+"lienurl": href,
+"badge": "NEW"
+})
+else:
+print(f"[Erreur] Échec de la communication réseau avec Gamewave (Code {status_code}).")
+
+=====================================================================
+
+
+--- 4. TRAITEMENT FINAL & ENREGISTREMENT ---
+
+
+=====================================================================
+
+if not json_data and anciens_liens:
+json_data = list(anciens_liens.values())
+
+Tri chronologique
+
+def extraire_cle_parution(item):
+try:
+return datetime.strptime(item.get("date", ""), "%d/%m/%Y").timestamp()
+except:
+return 0
+json_data.sort(key=extraire_cle_parution, reverse=True)
+
+Enregistrement local
+
+with open(filename, mode="w", encoding="utf-8") as json_file:
+json.dump(json_data, json_file, indent=4, ensure_ascii=False)
+print(f"[Terminé] Fichier Dice Dreams {filename} mis à jour ({len(json_data)} liens valides).")
+
+--- 6. PUSH FIREBASE (inchangé) ---
+
+if nouveaux_liens_detectes > 0:
+try:
+from firebase_admin import messaging
+db.collection("notifications").add({
+"title": "🎲 Dice Reward ! 🎁",
+"body": "New free spins have just been added !",
+"nom_du_jeu": "dice_dreams",
+"created_at": firestore.SERVER_TIMESTAMP
+})
+print("[Firebase] Enregistrement d'historique créé.")
+message = messaging.Message(
+notification=messaging.Notification(
+title="🎲 Dice Reward ! 🎁",
+body="New free spins have just been added !"
+),
+topic="dice_dreams"
+)
+response = messaging.send(message)
+print(f"[Firebase Push] Notification propulsée en direct avec succès ! (ID: {response})")
+except Exception as e:
+print(f"[Firebase] [Erreur] Impossible d'écrire ou d'envoyer l'alerte push direct : {e}")
