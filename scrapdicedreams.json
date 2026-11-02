@@ -20,6 +20,16 @@
         "badge": "NEW"
     },
     {
+        "source": "gamewave",
+        "date_scraping": "02/11/2026 @ 19:05",
+        "date_scraping1": "02/11/2026 @ 00:00",
+        "date": "02/11/2026",
+        "heure": "00:00",
+        "recompense": "50 Dés gratuits",
+        "lienurl": "https://rewards.dicedreams.com/?handler=reward&link=CommunityBroadcast_011126vcc",
+        "badge": "NEW"
+    },
+    {
         "source": "mosttechs",
         "date_scraping": "02/11/2026 @ 13:05",
         "date_scraping1": "01/11/2026 @ 13:05",
@@ -27,7 +37,7 @@
         "heure": "13:05",
         "recompense": "Rolls gratuits",
         "lienurl": "https://rewards.dicedreams.com/?handler=reward&link=CommunityPost_011126xqq",
-        "badge": "NEW"
+        "badge": ""
     },
     {
         "source": "mosttechs",
@@ -77,7 +87,7 @@
         "heure": "13:05",
         "recompense": "Rolls gratuits",
         "lienurl": "https://d10xl.com/dicedreams/yMSoF",
-        "badge": "NEW"
+        "badge": ""
     },
     {
         "source": "mosttechs",
@@ -97,7 +107,7 @@
         "heure": "13:05",
         "recompense": "Rolls gratuits",
         "lienurl": "https://rewards.dicedreams.com/?handler=reward&link=CommunityPost_301026cxz",
-        "badge": "NEW"
+        "badge": ""
     },
     {
         "source": "mosttechs",
@@ -107,7 +117,7 @@
         "heure": "13:05",
         "recompense": "Rolls gratuits",
         "lienurl": "https://d10xl.com/dicedreams/ZRAG4",
-        "badge": "NEW"
+        "badge": ""
     },
     {
         "source": "gamewave",
