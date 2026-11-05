@@ -1,5 +1,25 @@
 [
     {
+        "source": "gamewave",
+        "date_scraping": "04/11/2026 @ 19:05",
+        "date_scraping1": "04/11/2026 @ 00:00",
+        "date": "05/11/2026",
+        "heure": "00:00",
+        "recompense": "50 Dés gratuits",
+        "lienurl": "https://rewards.dicedreams.com/?handler=reward&link=CommunityPost_041126bbx",
+        "badge": "NEW"
+    },
+    {
+        "source": "gamewave",
+        "date_scraping": "04/11/2026 @ 19:05",
+        "date_scraping1": "04/11/2026 @ 00:00",
+        "date": "05/11/2026",
+        "heure": "00:00",
+        "recompense": "50 Dés gratuits",
+        "lienurl": "https://rewards.dicedreams.com/?handler=reward&link=CommunityWhatsapp_031126",
+        "badge": "NEW"
+    },
+    {
         "source": "mosttechs",
         "date_scraping": "04/11/2026 @ 17:05",
         "date_scraping1": "04/11/2026 @ 17:05",
@@ -28,26 +48,6 @@
         "recompense": "Rolls gratuits",
         "lienurl": "https://rewards.dicedreams.com/?handler=reward&link=CommunityBroadcast_031126ccz",
         "badge": ""
-    },
-    {
-        "source": "gamewave",
-        "date_scraping": "04/11/2026 @ 19:05",
-        "date_scraping1": "04/11/2026 @ 00:00",
-        "date": "04/11/2026",
-        "heure": "00:00",
-        "recompense": "50 Dés gratuits",
-        "lienurl": "https://rewards.dicedreams.com/?handler=reward&link=CommunityPost_041126bbx",
-        "badge": "NEW"
-    },
-    {
-        "source": "gamewave",
-        "date_scraping": "04/11/2026 @ 19:05",
-        "date_scraping1": "04/11/2026 @ 00:00",
-        "date": "04/11/2026",
-        "heure": "00:00",
-        "recompense": "50 Dés gratuits",
-        "lienurl": "https://rewards.dicedreams.com/?handler=reward&link=CommunityWhatsapp_031126",
-        "badge": "NEW"
     },
     {
         "source": "mosttechs",
@@ -137,46 +137,6 @@
         "heure": "00:00",
         "recompense": "50 Dés gratuits",
         "lienurl": "https://rewards.dicedreams.com/?handler=reward&link=CommunityWhatsapp_311026",
-        "badge": ""
-    },
-    {
-        "source": "mosttechs",
-        "date_scraping": "31/10/2026 @ 18:05",
-        "date_scraping1": "31/10/2026 @ 18:05",
-        "date": "31/10/2026",
-        "heure": "18:05",
-        "recompense": "Rolls gratuits",
-        "lienurl": "https://rewards.dicedreams.com/?handler=reward&link=CommunityPost_311026czx",
-        "badge": ""
-    },
-    {
-        "source": "mosttechs",
-        "date_scraping": "31/10/2026 @ 18:05",
-        "date_scraping1": "31/10/2026 @ 18:05",
-        "date": "31/10/2026",
-        "heure": "18:05",
-        "recompense": "Rolls gratuits",
-        "lienurl": "https://rewards.dicedreams.com/?handler=reward&link=CommunityStory_311026caa",
-        "badge": ""
-    },
-    {
-        "source": "mosttechs",
-        "date_scraping": "04/11/2026 @ 17:05",
-        "date_scraping1": "31/10/2026 @ 17:05",
-        "date": "31/10/2026",
-        "heure": "17:05",
-        "recompense": "Rolls gratuits",
-        "lienurl": "https://d10xl.com/dicedreams/yMSoF",
-        "badge": ""
-    },
-    {
-        "source": "mosttechs",
-        "date_scraping": "31/10/2026 @ 06:05",
-        "date_scraping1": "31/10/2026 @ 06:05",
-        "date": "31/10/2026",
-        "heure": "06:05",
-        "recompense": "Rolls gratuits",
-        "lienurl": "https://rewards.dicedreams.com/?handler=reward&link=CommunityBroadcast_301026czz",
         "badge": ""
     }
 ]
