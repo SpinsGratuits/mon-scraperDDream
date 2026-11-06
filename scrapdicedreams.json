@@ -7,7 +7,7 @@
         "heure": "18:05",
         "recompense": "Rolls gratuits",
         "lienurl": "https://rewards.dicedreams.com/?handler=reward&link=CommunityPost_051126bbm",
-        "badge": "NEW"
+        "badge": ""
     },
     {
         "source": "mosttechs",
@@ -131,42 +131,22 @@
     },
     {
         "source": "gamewave",
+        "date_scraping": "06/11/2026 @ 00:05",
+        "date_scraping1": "02/11/2026 @ 19:00",
+        "date": "02/11/2026",
+        "heure": "19:00",
+        "recompense": "50 Dés gratuits",
+        "lienurl": "https://rewards.dicedreams.com/?handler=reward&link=CommunityPost_011126xqq",
+        "badge": "NEW"
+    },
+    {
+        "source": "gamewave",
         "date_scraping": "02/11/2026 @ 19:05",
         "date_scraping1": "02/11/2026 @ 00:00",
         "date": "02/11/2026",
         "heure": "00:00",
         "recompense": "50 Dés gratuits",
         "lienurl": "https://rewards.dicedreams.com/?handler=reward&link=CommunityBroadcast_011126vcc",
-        "badge": ""
-    },
-    {
-        "source": "mosttechs",
-        "date_scraping": "02/11/2026 @ 13:05",
-        "date_scraping1": "01/11/2026 @ 13:05",
-        "date": "01/11/2026",
-        "heure": "13:05",
-        "recompense": "Rolls gratuits",
-        "lienurl": "https://rewards.dicedreams.com/?handler=reward&link=CommunityPost_011126xqq",
-        "badge": ""
-    },
-    {
-        "source": "mosttechs",
-        "date_scraping": "01/11/2026 @ 17:37",
-        "date_scraping1": "01/11/2026 @ 17:37",
-        "date": "01/11/2026",
-        "heure": "17:37",
-        "recompense": "Rolls gratuits",
-        "lienurl": "https://rewards.dicedreams.com/?handler=reward&link=CommunityStory_011126bbn",
-        "badge": ""
-    },
-    {
-        "source": "gamewave",
-        "date_scraping": "01/11/2026 @ 18:05",
-        "date_scraping1": "01/11/2026 @ 00:00",
-        "date": "01/11/2026",
-        "heure": "00:00",
-        "recompense": "50 Dés gratuits",
-        "lienurl": "https://rewards.dicedreams.com/?handler=reward&link=CommunityWhatsapp_311026",
         "badge": ""
     }
 ]
