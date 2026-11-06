@@ -1,5 +1,25 @@
 [
     {
+        "source": "gamewave",
+        "date_scraping": "06/11/2026 @ 08:05",
+        "date_scraping1": "06/11/2026 @ 00:00",
+        "date": "06/11/2026",
+        "heure": "00:00",
+        "recompense": "50 Dés gratuits",
+        "lienurl": "https://rewards.dicedreams.com/?handler=reward&link=CommunityWhatsapp_041126",
+        "badge": "NEW"
+    },
+    {
+        "source": "gamewave",
+        "date_scraping": "06/11/2026 @ 08:05",
+        "date_scraping1": "06/11/2026 @ 00:00",
+        "date": "06/11/2026",
+        "heure": "00:00",
+        "recompense": "50 Dés gratuits",
+        "lienurl": "https://rewards.dicedreams.com/?handler=reward&link=CommunityWhatsapp_051126",
+        "badge": "NEW"
+    },
+    {
         "source": "mosttechs",
         "date_scraping": "05/11/2026 @ 18:05",
         "date_scraping1": "05/11/2026 @ 18:05",
