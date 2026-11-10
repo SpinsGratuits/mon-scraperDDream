@@ -1,6 +1,16 @@
 [
     {
         "source": "mosttechs",
+        "date_scraping": "10/11/2026 @ 13:05",
+        "date_scraping1": "10/11/2026 @ 13:05",
+        "date": "10/11/2026",
+        "heure": "13:05",
+        "recompense": "Rolls gratuits",
+        "lienurl": "https://rewards.dicedreams.com/?handler=reward&link=CommunityBroadcast_091126bba",
+        "badge": "NEW"
+    },
+    {
+        "source": "mosttechs",
         "date_scraping": "09/11/2026 @ 18:05",
         "date_scraping1": "09/11/2026 @ 18:05",
         "date": "09/11/2026",
