@@ -9,7 +9,7 @@ from firebase_admin import credentials, firestore
 
 # --- 1. CONFIGURATION ---
 url_mosttechs = "https://mosttechs.com/free-dice-dreams-rolls/"
-url_gamewave = "https://gamewave.fr/dice-dreams/dice-dreams-liens-des-lancers-de-des-gratuits/"
+url_gamewave = "https://gamewave.fr"
 filename = "scrapdicedreams.json"
 
 mois_en_to_num = {
