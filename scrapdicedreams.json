@@ -17,7 +17,7 @@
         "heure": "18:05",
         "recompense": "Rolls gratuits",
         "lienurl": "https://rewards.dicedreams.com/?handler=reward&link=CommunityStory_201126cpk",
-        "badge": "NEW"
+        "badge": ""
     },
     {
         "source": "mosttechs",
@@ -27,7 +27,7 @@
         "heure": "18:05",
         "recompense": "Rolls gratuits",
         "lienurl": "https://rewards.dicedreams.com/?handler=reward&link=CommunityPost_201126czz",
-        "badge": "NEW"
+        "badge": ""
     },
     {
         "source": "mosttechs",
@@ -107,56 +107,6 @@
         "heure": "16:05",
         "recompense": "Rolls gratuits",
         "lienurl": "https://rewards.dicedreams.com/?handler=reward&link=CommunityStory_171126bbn",
-        "badge": ""
-    },
-    {
-        "source": "mosttechs",
-        "date_scraping": "16/11/2026 @ 18:05",
-        "date_scraping1": "16/11/2026 @ 18:05",
-        "date": "16/11/2026",
-        "heure": "18:05",
-        "recompense": "Rolls gratuits",
-        "lienurl": "https://rewards.dicedreams.com/?handler=reward&link=CommunityPost_161126bbm",
-        "badge": ""
-    },
-    {
-        "source": "mosttechs",
-        "date_scraping": "16/11/2026 @ 18:05",
-        "date_scraping1": "16/11/2026 @ 18:05",
-        "date": "16/11/2026",
-        "heure": "18:05",
-        "recompense": "Rolls gratuits",
-        "lienurl": "https://rewards.dicedreams.com/?handler=reward&link=CommunityBroadcast_161126vcc",
-        "badge": ""
-    },
-    {
-        "source": "mosttechs",
-        "date_scraping": "16/11/2026 @ 18:05",
-        "date_scraping1": "16/11/2026 @ 18:05",
-        "date": "16/11/2026",
-        "heure": "18:05",
-        "recompense": "Rolls gratuits",
-        "lienurl": "https://rewards.dicedreams.com/?handler=reward&link=CommunityStory_161126cqq",
-        "badge": ""
-    },
-    {
-        "source": "mosttechs",
-        "date_scraping": "16/11/2026 @ 13:43",
-        "date_scraping1": "16/11/2026 @ 13:43",
-        "date": "16/11/2026",
-        "heure": "13:43",
-        "recompense": "Rolls gratuits",
-        "lienurl": "https://d10xl.com/dicedreams/NeDgH",
-        "badge": ""
-    },
-    {
-        "source": "mosttechs",
-        "date_scraping": "16/11/2026 @ 18:05",
-        "date_scraping1": "16/11/2026 @ 18:05",
-        "date": "16/11/2026",
-        "heure": "18:05",
-        "recompense": "Rolls gratuits",
-        "lienurl": "https://rewards.dicedreams.com/?handler=reward&link=CommunityStory_151126cca",
         "badge": ""
     }
 ]
