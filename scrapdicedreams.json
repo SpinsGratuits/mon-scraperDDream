@@ -7,7 +7,7 @@
         "heure": "18:05",
         "recompense": "Rolls gratuits",
         "lienurl": "https://rewards.dicedreams.com/?handler=reward&link=CommunityPost_271126bbq",
-        "badge": "NEW"
+        "badge": ""
     },
     {
         "source": "mosttechs",
@@ -17,7 +17,7 @@
         "heure": "17:05",
         "recompense": "Rolls gratuits",
         "lienurl": "https://d10xl.com/dicedreams/ohGGz",
-        "badge": "NEW"
+        "badge": ""
     },
     {
         "source": "mosttechs",
@@ -27,7 +27,7 @@
         "heure": "17:05",
         "recompense": "Rolls gratuits",
         "lienurl": "https://rewards.dicedreams.com/?handler=reward&link=CommunityStory_271126cvv",
-        "badge": "NEW"
+        "badge": ""
     },
     {
         "source": "mosttechs",
@@ -127,36 +127,6 @@
         "heure": "18:05",
         "recompense": "Rolls gratuits",
         "lienurl": "https://rewards.dicedreams.com/?handler=reward&link=CommunityStory_241126bas",
-        "badge": ""
-    },
-    {
-        "source": "mosttechs",
-        "date_scraping": "23/11/2026 @ 18:05",
-        "date_scraping1": "23/11/2026 @ 18:05",
-        "date": "23/11/2026",
-        "heure": "18:05",
-        "recompense": "Rolls gratuits",
-        "lienurl": "https://rewards.dicedreams.com/?handler=reward&link=CommunityPost_231126bkk",
-        "badge": ""
-    },
-    {
-        "source": "mosttechs",
-        "date_scraping": "23/11/2026 @ 13:59",
-        "date_scraping1": "23/11/2026 @ 13:59",
-        "date": "23/11/2026",
-        "heure": "13:59",
-        "recompense": "Rolls gratuits",
-        "lienurl": "https://d10xl.com/dicedreams/vEkcI",
-        "badge": ""
-    },
-    {
-        "source": "mosttechs",
-        "date_scraping": "23/11/2026 @ 06:05",
-        "date_scraping1": "23/11/2026 @ 06:05",
-        "date": "23/11/2026",
-        "heure": "06:05",
-        "recompense": "Rolls gratuits",
-        "lienurl": "https://rewards.dicedreams.com/?handler=reward&link=CommunityBroadcast_221126coo",
         "badge": ""
     }
 ]
